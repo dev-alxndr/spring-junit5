@@ -26,4 +26,13 @@ public class Book {
 
 	@Column(length = 20, nullable = false)
 	private String author;
+
+	public void changeTitle(final String to) {
+		this.title = to;
+	}
+
+	public void changeAuthor(final String to) {
+		this.author = to;
+	}
+
 }

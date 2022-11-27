@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.buf.UDecoder;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.event.annotation.AfterTestMethod;
 
 import javax.persistence.EntityManager;
+import java.rmi.server.UID;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,9 +109,25 @@ class BookRepositoryTest {
 
 
 	// 4. 책 수정
+	@Test
+	public void modifyBookTest() {
+		// given
+		Long id = 1L;
+		String title = "노인과 바다";
+		String author = "Author";
 
+		final Book book = bookRepository.findById(id).get();
+		// when
+		book.changeAuthor(author);
+		book.changeTitle(title);
 
+		final Book changedBook = bookRepository.save(book);
 
+		// then
+		assertThat(changedBook.getAuthor()).isEqualTo(author);
+		assertThat(changedBook.getTitle()).isEqualTo(title);
+		assertThat(changedBook.getId()).isEqualTo(id);
+	}
 
 	// 5. 책 삭제
 	@Test
