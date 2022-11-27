@@ -5,9 +5,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 
 @Slf4j
@@ -17,8 +21,23 @@ class BookRepositoryTest {
 	@Autowired
 	BookRepository bookRepository;
 
-	@Test
+	// @BeforeAll - 테스트 시작 전 한번만 실행
+	@BeforeEach	// 각 테스트 시작 전 한번씩 실행
+	public void prepareBook() {
+		String title = "junit";
+		String author = "Alexander";
+
+		final Book newBook = Book.builder()
+				.title(title)
+				.author(author)
+				.build();
+
+		// when
+		final Book savedBook = bookRepository.save(newBook);
+	}
+
 	// 1. 책 등록
+	@Test
 	void saveBookTest() {
 		log.debug("책 등록 테스트 실행");
 
@@ -40,8 +59,39 @@ class BookRepositoryTest {
 	}
 
 	// 2. 책 다건 검색
+	@Test
+	public void findBooksTest() {
+
+		// given
+		String title  = "junit";
+		String author = "Alexander";
+		// when
+
+		// when
+		final List<Book> books = bookRepository.findAll();
+
+		// then
+		assertThat(books.size()).isEqualTo(1);
+
+
+		assertThat(title).isEqualTo(books.get(0).getTitle());
+		assertThat(author).isEqualTo(books.get(0).getAuthor());
+	}
 
 	// 3. 책 단건 검색
+	@Test
+	public void findBookTest() {
+		// given
+		String title = "junit";
+		String author = "Alexander";
+		// when
+		final Book book = bookRepository.findById(1L).get();
+
+		// then
+		assertThat(title).isEqualTo(book.getTitle());
+		assertThat(author).isEqualTo(book.getAuthor());
+	}
+
 
 	// 4. 책 수정
 
