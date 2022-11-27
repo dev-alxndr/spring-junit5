@@ -5,13 +5,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.event.annotation.AfterTestMethod;
 
+import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -20,6 +24,9 @@ class BookRepositoryTest {
 
 	@Autowired
 	BookRepository bookRepository;
+
+	@Autowired
+	EntityManager em;
 
 	// @BeforeAll - 테스트 시작 전 한번만 실행
 	@BeforeEach	// 각 테스트 시작 전 한번씩 실행
@@ -34,6 +41,12 @@ class BookRepositoryTest {
 
 		// when
 		final Book savedBook = bookRepository.save(newBook);
+	}
+
+	@AfterEach
+	public void tearDown() {
+		bookRepository.deleteAll();
+		em.createNativeQuery("ALTER TABLE book ALTER COLUMN `id` RESTART").executeUpdate();
 	}
 
 	// 1. 책 등록
@@ -95,6 +108,19 @@ class BookRepositoryTest {
 
 	// 4. 책 수정
 
-	// 5. 책 삭제
 
+
+
+	// 5. 책 삭제
+	@Test
+	public void deleteBookTest() {
+		// given
+		Long id = 1L;
+		// when
+		bookRepository.deleteById(id);
+		// then
+		final Optional<Book> optBook = bookRepository.findById(id);
+
+		assertThat(optBook.isPresent()).isFalse();
+	}
 }
