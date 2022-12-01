@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +40,11 @@ public class BookService {
     }
 
     // 책 삭제
-
+    @Transactional
+    public void deleteBookById(final Long id) {
+        Objects.requireNonNull(id);
+        bookRepository.deleteById(id);
+    }
 
     // 책 수정
 
