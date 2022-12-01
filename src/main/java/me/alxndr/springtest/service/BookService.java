@@ -16,12 +16,13 @@ import java.util.stream.Collectors;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final MailSender mailSender;
 
     // 책 등록
     @Transactional
     public BookDto.BookResponseDto registerBook(final BookDto.BookSaveRequestDto dto) {
-        final Book book = dto.toEntity();
-        bookRepository.save(book);
+        final Book book = bookRepository.save(dto.toEntity());
+        mailSender.send();
         return BookDto.BookResponseDto.of(book);
     }
 
