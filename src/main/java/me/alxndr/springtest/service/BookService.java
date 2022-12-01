@@ -30,9 +30,16 @@ public class BookService {
                 .map(BookDto.BookResponseDto::of)
                 .collect(Collectors.toList());
     }
+
     // 책 한건 보기
+    public BookDto.BookResponseDto findBookById(final Long id) {
+        final Book book = bookRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        return BookDto.BookResponseDto.of(book);
+    }
 
     // 책 삭제
+
 
     // 책 수정
 
