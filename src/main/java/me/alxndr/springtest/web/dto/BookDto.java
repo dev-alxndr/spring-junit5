@@ -21,8 +21,22 @@ public class BookDto {
 		}
 	}
 
+	@Data
+	@Builder
 	public static class BookResponseDto {
+		private Long id;
 
+		private String title;
+
+		private String author;
+
+		public static BookResponseDto of(final Book book) {
+			return BookResponseDto.builder()
+					.id(book.getId())
+					.title(book.getTitle())
+					.author(book.getAuthor())
+					.build();
+		}
 	}
 
 }
