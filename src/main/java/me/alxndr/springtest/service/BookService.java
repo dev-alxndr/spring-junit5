@@ -7,6 +7,9 @@ import me.alxndr.springtest.web.dto.BookDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class BookService {
@@ -22,7 +25,11 @@ public class BookService {
     }
 
     // 책 목록보기
-
+    public List<BookDto.BookResponseDto> findBooks() {
+        return bookRepository.findAll().stream()
+                .map(BookDto.BookResponseDto::of)
+                .collect(Collectors.toList());
+    }
     // 책 한건 보기
 
     // 책 삭제
