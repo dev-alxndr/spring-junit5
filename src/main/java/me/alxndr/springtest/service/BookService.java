@@ -49,10 +49,12 @@ public class BookService {
 
     // 책 수정
     @Transactional
-    public void modifyBookById(Long id, BookDto.BookSaveRequestDto dto) {
+    public BookDto.BookResponseDto modifyBookById(Long id, BookDto.BookSaveRequestDto dto) {
         final Book book = bookRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
         book.update(dto.getTitle(), dto.getAuthor());
+
+        return BookDto.BookResponseDto.of(book);
     }
 
 }
