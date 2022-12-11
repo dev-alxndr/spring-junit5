@@ -2,6 +2,11 @@ package me.alxndr.springtest.web.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
+import java.util.HashMap;
 
 /**
  * @author : Alexander Choi
@@ -21,13 +26,46 @@ public class Response<T> {
         this.body = body;
     }
 
-    @Getter
-    public static class Message {
-        public static final String success = "Success";
+
+    public static<T> Response<T> OK(T body) {
+        return Response.<T>builder()
+                .code(Code.SUCCESS)
+                .message(Message.SUCCESS)
+                .body(body)
+                .build();
+    }
+
+
+    public static Response error(BindingResult bindingResult) {
+        final HashMap<Object, Object> errors = new HashMap<>();
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        return Response.builder()
+                .code(Code.FAIL)
+                .message(Message.FAIL)
+                .body(errors)
+                .build();
+    }
+
+    public static Response error(final RuntimeException re) {
+
+        return Response.builder()
+                .code(Code.FAIL)
+                .message(Message.FAIL)
+                .body(re.getMessage())
+                .build();
     }
 
     @Getter
-    public class Code {
+    public static class Message {
+        public static final String SUCCESS = "Success";
+        public static final String FAIL = "Fail";
+    }
+
+    @Getter
+    public static class Code {
         public static final int SUCCESS = 1;
         public static final int FAIL = -1;
 

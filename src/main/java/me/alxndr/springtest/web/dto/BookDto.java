@@ -1,16 +1,25 @@
 package me.alxndr.springtest.web.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import me.alxndr.springtest.domain.Book;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 public class BookDto {
+
+	@Data
+	@Builder
+	public static class BooksDto {
+		private List<BookResponseDto> books;
+
+		public static BooksDto of(final List<BookResponseDto> dtos) {
+			return BooksDto.builder()
+					.books(dtos)
+					.build();
+		}
+	}
 
 	@Data
 	@Builder
