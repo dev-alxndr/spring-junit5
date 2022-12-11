@@ -44,16 +44,29 @@ public class BookController {
     }
 
     // 책 한건 보기
-//    @GetMapping("/{id}")
-    public void findBook() {
-
+    @GetMapping("/{id}")
+    public ResponseEntity<Response<BookDto.BookResponseDto>> findBook(@PathVariable Long id) {
+        final BookDto.BookResponseDto bookById = bookService.findBookById(id);
+        return new ResponseEntity<>(Response.OK(bookById), HttpStatus.OK);
     }
 
+    // 책 삭제하기
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteBook(@PathVariable Long id) {
+        bookService.deleteBookById(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     // 책 수정
-//    @PutMapping
-    public void modifyBook() {
+    @PutMapping("/{id}")
+    public ResponseEntity<Response> modifyBook(@PathVariable Long id, @RequestBody @Valid BookDto.BookSaveRequestDto dto, BindingResult bindingResult) {
 
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(Response.error(bindingResult), HttpStatus.BAD_REQUEST);
+        }
+
+        final BookDto.BookResponseDto modifiedBook = bookService.modifyBookById(id, dto);
+        return new ResponseEntity<>(Response.OK(modifiedBook), HttpStatus.OK);
     }
 
 }
